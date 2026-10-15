@@ -1,0 +1,19 @@
+#this file tells github not to upload these files
+
+# Environment variables / secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+
+# Pytest
+.pytest_cache/
+
+# VS Code
+.vscode/
