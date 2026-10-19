@@ -1,0 +1,25 @@
+/* Setting the background image to semi transparrent */
+body {background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.35),
+            rgba(0, 0, 0, 0.35)
+        ), url("images/cl_background.jpg");
+  background-size: cover;
+  background-position: centre;
+  background-repeat: no-repeat;
+  margin: 0;
+    display: flex;
+    /* Stack the H1 and the Form */
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: white;
+}
+
+.login-page h1 {
+    color: white;
+    font-size: 50px;
+    text-align: center;
+}

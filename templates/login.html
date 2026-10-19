@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main class="login-page">
+        <h1>Welcome to the Chadwick Lawrence Referrer Portal</h1>
+        <h2>Please Sign in</h2>
+
+<!----If the rquest is invalid-->
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+
+<!--- Pushing the request back into flask/app.py-->
+{%endif%}
+<form action="/" method="POST">
+     <label for="First">Username </label>
+     <input type="text" id="Username" name="Username"
+    <p>
+     <label for="password">Password:</label>
+<input type="password" id="Password" name="Password" 
+    placeholder="Enter your Password" required>
+  <br><br><button type="submit" class="login-btn">Login</button>
+  </p>
+
+
+</form>
+
+</body>
+</html>
