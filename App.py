@@ -21,7 +21,7 @@ def dashboard():
 
     return render_template(
         "dashboard.html",
-        role=session["role"]
+        role=session["is_admin"]
     )
 
 
@@ -43,7 +43,7 @@ def login():
                 user_id,
                 email,
                 password_hash,
-                role,
+                is_admin,
                 organisation_id
             FROM users
             WHERE email = %s
@@ -60,7 +60,7 @@ def login():
             # Save logged-in user's information in the session
             session["user_id"] = user[0]
             session["email"] = user[1]
-            session["role"] = user[3]
+            session["is_admin"] = user[3]
             session["organisation_id"] = user[4]
 
             return redirect(url_for("dashboard"))

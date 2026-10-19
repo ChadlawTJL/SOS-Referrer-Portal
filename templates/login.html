@@ -8,21 +8,23 @@
         <h1>Welcome to the Chadwick Lawrence Referrer Portal</h1>
         <h2>Please Sign in</h2>
 
-<!----If the rquest is invalid-->
+
+<form action="{{ url_for('login') }}" method="POST">
+     <label for="First">Username </label>
+     <input type="text" id="email" name="email">
+    <p>
+     <label for="password">Password:</label>
+<input type="password" id="password" name="password" 
+    placeholder="Enter your Password" required>
+  <br><br><button type="submit" class="login-btn">Login</button>
+  
+  <!----If the rquest is invalid-->
 {% if error %}
 <p style="color:red;">{{ error }}</p>
 
 <!--- Pushing the request back into flask/app.py-->
 {%endif%}
-<form action="/" method="POST">
-     <label for="First">Username </label>
-     <input type="text" id="Username" name="Username"
-    <p>
-     <label for="password">Password:</label>
-<input type="password" id="Password" name="Password" 
-    placeholder="Enter your Password" required>
-  <br><br><button type="submit" class="login-btn">Login</button>
-  </p>
+
 
 
 </form>
