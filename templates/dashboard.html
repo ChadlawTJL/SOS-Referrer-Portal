@@ -19,12 +19,18 @@
     <!-- Buttons to act as links to each page -->
     <div class="dashboard-buttons">
         <a href="{{ url_for('matters') }}" class="dashbtn">
+             {% if session.get('is_admin') %}
+            View all matters
+        {% else %}
             View your matters
+        {% endif %}
         </a>
 
+        {% if session.get('is_admin') %}
         <a href="{{ url_for('users') }}" class="dashbtn">
             Admin tools
         </a>
+        {% endif %} 
     </div>
 
 </main>
