@@ -88,12 +88,12 @@ def matters():
     cursor.close()
     conn.close()
 
-    return render_template("matters.html", matters=matters)
+    return render_template("matter.html", matters=matters)
 
 
-@app.route("/users")
+@app.route("/admin")
 def users():
-    return render_template("users.html")
+    return render_template("admin.html")
 
 
 if __name__ == "__main__":
