@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+
+<main class="admin-page">
+    <br><br>
+    <h1>Administration Tools</h1>
+
+    <h2> Users</h2>
+
+    <a href="{{ url_for('create_user') }}">Create User</a>
+<!--Creating table for users-->
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Organisation</th>
+                <th>Administrator?</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+<!---Filling in the tabke from the flask database query-->
+        <tbody>
+            {% for user in users%}
+            <tr>
+                <td>{{ user[1] }}</td>
+                <td>{{ user[3] }}</td>
+
+            <td>
+                <!--Establishes if the user is an admin, changing a boolena to a yes no-->
+                {% if user[2] %}
+                    Yes
+                {% else %}
+                    No
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('edit_user', user_id=user[0]) }}">
+                    Edit
+                </a>
+            </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
