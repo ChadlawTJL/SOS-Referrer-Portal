@@ -3,3 +3,53 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
+<body>
+    <div class="edit-user-page">
+        <h1>Edit User</h1>
+        <!--new details fields setup-->
+        <form method="POST">
+            <!--Username-->
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" value="{{user['email']}}" required>
+            
+            <!--selecting organsisation from flask sql query-->
+            <label for="organisation_id">Organisation</label>
+
+<select id="organisation_id" name="organisation_id" required>
+
+    {% for organisation in organisations %}
+
+        <option
+            value="{{ organisation[0] }}"
+            {% if organisation[0] == user['organisation_id'] %}
+                selected
+            {% endif %}
+        >
+            {{ organisation[1] }}
+        </option>
+
+    {% endfor %}
+
+</select>
+
+            <!--admin-->
+            <div class="checkbox-row">
+                <input type="checkbox" id="is_admin" name="is_admin" {% if user['is_admin'] %}checked
+                {% endif %}>
+
+                <label for="is_admin">Administrator</label>
+            </div>
+            <!--form submission-->
+            <button type="submit">
+                Save Changes
+            </button>
+
+            <a href="{{ url_for('users') }}">
+                Cancel
+            </a>
+
+    
+        </form>
+    </div>
+</body>

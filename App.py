@@ -161,81 +161,79 @@ def create_user():
         cursor.close()
         conn.close()
 
-        return redirect(url_for("admin"))
+        return redirect(url_for("users"))
 
     return render_template("create_user.html")
 
-@app.route("/admin/user/<int:user_id>/edit", methods=["GET", "POST"])
+
+#edit user
+@app.route("/edit_user/<int:user_id>", methods=["GET", "POST"])
 def edit_user(user_id):
 
-    # Check the user is logged in
-    if "user_id" not in session:
-        return redirect(url_for("login"))
-
-    # Check the logged-in user is an admin
     if not session.get("is_admin"):
         return redirect(url_for("dashboard"))
 
     conn = get_db_connection()
-    cursor = conn.cursor()
+    cur = conn.cursor()
 
-    # If the edit form has been submitted
     if request.method == "POST":
-
         email = request.form["email"]
         organisation_id = request.form["organisation_id"]
-
-        # True if checkbox is ticked, otherwise False
         is_admin = "is_admin" in request.form
+        #organisation selected validation
+        if not organisation_id:
+            return "Please select an organisation", 400
 
-        cursor.execute("""
+        cur.execute(
+            """
             UPDATE users
             SET email = %s,
                 organisation_id = %s,
                 is_admin = %s
             WHERE user_id = %s
-        """, (
-            email,
-            organisation_id,
-            is_admin,
-            user_id
-        ))
+            """,
+            (email, organisation_id, is_admin, user_id)
+        )
 
         conn.commit()
-
-        cursor.close()
+        cur.close()
         conn.close()
 
         return redirect(url_for("users"))
 
-    # GET request - retrieve the existing user
-    cursor.execute("""
-        SELECT
-            user_id,
-            email,
-            is_admin,
-            organisation_id
-        FROM users
-        WHERE user_id = %s
-    """, (user_id,))
+    # Get the user being edited
+    cur.execute(
+        "SELECT * FROM users WHERE user_id = %s",
+        (user_id,)
+    )
 
-    user = cursor.fetchone()
+    user = cur.fetchone()
 
-    cursor.close()
+    # Get all organisations for the dropdown
+    cur.execute(
+        "SELECT organisation_id, organisation_name FROM organisations ORDER BY organisation_name"
+    )
+
+    organisations = cur.fetchall()
+
+    cur.close()
     conn.close()
 
-    return render_template("edit_user.html", user=user)
-
+    return render_template(
+        "edit_user.html",
+        user=user,
+        organisations=organisations
+    )
 
 # Delete user
 @app.route("/delete_user/<int:user_id>", methods=["POST"])
-def delete_user():
+def delete_user(user_id):
 
     conn = get_db_connection()
     cur = conn.cursor()
 
     cur.execute(
-        'DELETE FROM users WHERE id = %s',
+        'DELETE FROM users WHERE user_id = %s',
         (user_id,)
     )
 
@@ -244,7 +242,10 @@ def delete_user():
     cur.close()
     conn.close()
 
-    return redirect(url_for("admin"))
+    return redirect(url_for("users"))
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+

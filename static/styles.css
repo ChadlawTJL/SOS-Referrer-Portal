@@ -186,3 +186,128 @@ body {background-image:
     border: none;
 }
 
+
+/* RESERVERD AREA FOR ADMIN FORMATTING */
+
+
+
+
+
+/* RESERVERD AREA FOR create user FORMATTING */
+
+
+
+/* Edit user formatting */
+.edit-user-page {
+    width: 100%;
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 35px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Page heading */
+.edit-user-page h1 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: #222;
+}
+
+/* Form layout */
+.edit-user-page form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels */
+.edit-user-page label {
+    margin-bottom: 7px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Email/text fields and organisation dropdown */
+.edit-user-page input[type="text"],
+.edit-user-page input[type="email"],
+.edit-user-page select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    font-size: 16px;
+
+    box-sizing: border-box;
+}
+
+/* Highlight field when selected */
+.edit-user-page input:focus,
+.edit-user-page select:focus {
+    outline: none;
+    border-color: #0078d4;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.15);
+}
+
+/* Administrator checkbox */
+.edit-user-page .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.edit-user-page .checkbox-row input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
+.edit-user-page .checkbox-row label {
+    margin: 0;
+}
+
+/* Save button */
+.edit-user-page button {
+    width: 100%;
+    padding: 12px;
+
+    background-color: #0078d4;
+    color: white;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.edit-user-page button:hover {
+    background-color: #005ea6;
+}
+
+/* Cancel link */
+.edit-user-page a {
+    display: block;
+
+    margin-top: 15px;
+    padding: 11px;
+
+    text-align: center;
+    text-decoration: none;
+
+    color: #333;
+    background-color: #eeeeee;
+
+    border-radius: 6px;
+}
+
+.edit-user-page a:hover {
+    background-color: #dddddd;
+}
