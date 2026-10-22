@@ -226,5 +226,25 @@ def edit_user(user_id):
 
     return render_template("edit_user.html", user=user)
 
+
+# Delete user
+@app.route("/delete_user/<int:user_id>", methods=["POST"])
+def delete_user():
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        'DELETE FROM users WHERE id = %s',
+        (user_id,)
+    )
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return redirect(url_for("admin"))
+
 if __name__ == "__main__":
     app.run(debug=True)

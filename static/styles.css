@@ -49,8 +49,8 @@ body {background-image:
     margin: 10px 0;
 }
 
-/* Style the form box */
-form {
+/* Style the form login box */
+.login-page form {
     background: white;
     padding: 30px;
     border-radius: 8px;
@@ -66,12 +66,12 @@ form {
 
 
 /* Space out the inputs and labels */
-label {
+.login-page label {
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-input {
+.login-page input {
     margin-bottom: 15px;
     padding: 10px;
     border: 1px solid #ccc;
@@ -79,7 +79,7 @@ input {
 }
 
 /*  Style the login button */
-.login-btn {
+.login-page .login-btn {
     padding: 10px;
     background-color: red;
     color: white;
@@ -89,7 +89,7 @@ input {
 }
 
 /* changes the button colour when you hover over it*/
-.login-btn:hover {
+.login-page .login-btn:hover {
     background-color: blue
 }
 
@@ -147,3 +147,42 @@ input {
     background-color: red;
     color: white;
 }
+
+/*admin user action */
+.user-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.user-actions form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+/*edit and  button behavour  */
+.delete-button {
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: #d13438;
+    color: white;
+    border: none;
+}
+    
+
+.edit-button {
+   padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: #345ed1;
+    color: white;
+    border: none;
+}
+
