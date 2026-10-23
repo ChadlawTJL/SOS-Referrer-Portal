@@ -187,13 +187,136 @@ body {background-image:
 }
 
 
-/* RESERVERD AREA FOR ADMIN FORMATTING */
+/*  Admin Page FORMATTING */
+
+.admin-page {
+    width: 90%;
+    max-width: 1100px;
+    margin: 50px auto;
+}
 
 
+/* Main admin heading */
+.admin-page h1 {
+    text-align: center;
+  color: yellow;
+  font-weight: bold;
+  font-size: 80px;
+  font-family: serif;
+  padding:auto;
+  background-color: rgba(0, 0, 0, 0.7);
+}
 
 
+/* Users title and create user button */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
 
-/* RESERVERD AREA FOR create user FORMATTING */
+    border-bottom: 2px solid #ddd;
+}
+
+
+.admin-header h2 {
+    font-size: 26px;
+    margin: 0;
+    color: #333;
+}
+
+
+/* Create user button */
+.create-user-btn {
+    display: inline-block;
+    padding: 10px 18px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+
+.create-user-btn:hover {
+    background-color: #0056b3;
+}
+
+
+/* User table */
+.admin-page table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+
+/* Table headings */
+.admin-page th {
+    background-color: #333;
+    color: white;
+    text-align: left;
+    padding: 14px;
+}
+
+
+/* Table data */
+.admin-page td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #ddd;
+}
+
+
+/* Highlight row when mouse is over it */
+.admin-page tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+
+/* Keep edit and delete buttons next to each other */
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* Edit button */
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 14px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+
+/* Delete button */
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+
+/* Edit hover */
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+
+/* Delete hover */
+.delete-btn:hover {
+    background-color: #b02a37;
+}
 
 
 
@@ -309,5 +432,122 @@ body {background-image:
 }
 
 .edit-user-page a:hover {
+    background-color: #dddddd;
+}
+
+
+/* Create user formatting */
+.create-user-page {
+    width: 100%;
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 35px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Page heading */
+.create-user-page h1 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: #222;
+}
+
+/* Form layout */
+.create-user-page form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels */
+.create-user-page label {
+    margin-bottom: 7px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Email/text fields and organisation dropdown */
+.create-user-page input[type="text"],
+.create-user-page input[type="email"],
+.create-user-page select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    margin-bottom: 20px;
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    font-size: 16px;
+
+    box-sizing: border-box;
+}
+
+/* Highlight field when selected */
+.create-user-page input:focus,
+.create-user-page select:focus {
+    outline: none;
+    border-color: #0078d4;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.15);
+}
+
+/* Administrator checkbox */
+.create-user-page .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.create-user-page .checkbox-row input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
+.create-user-page .checkbox-row label {
+    margin: 0;
+}
+
+/* create button */
+.create-user-page button {
+    width: 100%;
+    padding: 12px;
+
+    background-color: #0078d4;
+    color: white;
+
+    border: none;
+    border-radius: 6px;
+    margin-top: 12px;
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.create-user-page button:hover {
+    background-color: #005ea6;
+}
+
+/* Cancel link */
+.create-user-page a {
+    display: block;
+
+    margin-top: 15px;
+    padding: 11px;
+
+    text-align: center;
+    text-decoration: none;
+
+    color: #333;
+    background-color: #eeeeee;
+
+    border-radius: 6px;
+}
+
+.create-user-page a:hover {
     background-color: #dddddd;
 }

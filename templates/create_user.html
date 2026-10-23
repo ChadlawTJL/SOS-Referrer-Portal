@@ -3,3 +3,59 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
+<body>
+    <div class="create-user-page">
+        <h1>Create User</h1>
+        <!--new user details fields setup-->
+        <form method="POST">
+
+            <div class="create-user-form">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+
+                <label for="organisation_id">Organisation</label>
+                <select id="organisation_id" name="organisation_id" required>
+                    <option value=""> Select an organisation
+                    </option>
+                    {% for organisation in organisations %}
+
+                        <option value="{{ organisation[0] }}">
+                            {{ organisation[1] }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="form-group checkbox-group">
+
+                <label>
+                    <input
+                        type="checkbox"
+                        name="is_admin"
+                    >
+                    Administrator
+                </label>
+
+            </div>
+
+            <div class="form-buttons">
+
+                <button type="submit" class="btn">
+                    Create User
+                </button>
+
+                <a href="{{ url_for('users') }}"
+                   class="btn">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>

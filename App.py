@@ -122,50 +122,6 @@ def users():
     conn.close()
     return render_template("admin.html",users=users)
 
-#creating user from admin page
-@app.route("/admin/user/create",methods=["GET","POST"])
-def create_user():
-    if "user_id" not in session:
-        return redirect(url_for("login"))
-    if not session.get("is_admin"):
-        return redirect(url_for("dashboard"))
-    if request.method== "POST":
-
-        email=request.form["email"]
-        password = request.form["password"]
-        organisation_id=request.form["organisation_id"]
-        is_admin="is_admin" in request.form
-        #hasing the password
-        password_hash=generate_password_hash(password)
-
-        conn=get_db_connection()
-        cursor = conn.cursor()
-        
-        cursor.execute("""
-            INSERT INTO users (
-                email,
-                password_hash,
-                is_admin,
-                organisation_id
-            )
-            VALUES (%s, %s, %s, %s);
-        """, (
-            email,
-            password_hash,
-            is_admin,
-            organisation_id
-        ))
-
-        conn.commit()
-
-        cursor.close()
-        conn.close()
-
-        return redirect(url_for("users"))
-
-    return render_template("create_user.html")
-
-
 #edit user
 @app.route("/edit_user/<int:user_id>", methods=["GET", "POST"])
 def edit_user(user_id):
@@ -178,21 +134,27 @@ def edit_user(user_id):
 
     if request.method == "POST":
         email = request.form["email"]
+        password = request.form["password"]
         organisation_id = request.form["organisation_id"]
         is_admin = "is_admin" in request.form
         #organisation selected validation
         if not organisation_id:
             return "Please select an organisation", 400
 
+        #if new password was entered - hashing
+        if password:
+            password_hash = generate_password_hash(password)
+        
         cur.execute(
             """
             UPDATE users
             SET email = %s,
+                password_hash = %s,
                 organisation_id = %s,
                 is_admin = %s
             WHERE user_id = %s
             """,
-            (email, organisation_id, is_admin, user_id)
+            (email,password_hash, organisation_id, is_admin, user_id)
         )
 
         conn.commit()
@@ -243,6 +205,68 @@ def delete_user(user_id):
     conn.close()
 
     return redirect(url_for("users"))
+
+
+#create user from admin page
+@app.route("/create_user", methods=["GET", "POST"])
+def create_user():
+
+    # Make sure user is logged in and is an admin
+    if "user_id" not in session or not session.get("is_admin"):
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Get organisations for the dropdown
+    cur.execute("""
+        SELECT organisation_id, organisation_name
+        FROM organisations
+        ORDER BY organisation_name
+    """)
+
+    organisations = cur.fetchall()
+
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+        organisation_id = request.form["organisation_id"]
+
+        # Checkbox only appears in the form data when ticked
+        is_admin = "is_admin" in request.form
+
+        #hashing the password
+        password_hash = generate_password_hash(password)
+        #pushing the details into the database
+        cur.execute("""
+            INSERT INTO users (
+                email,
+                password_hash,
+                organisation_id,
+                is_admin
+            )
+            VALUES (%s, %s, %s, %s)
+        """, (
+            email,
+            password_hash,
+            organisation_id,
+            is_admin
+        ))
+
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+        return redirect(url_for("users"))
+
+    cur.close()
+    conn.close()
+
+    return render_template(
+        "create_user.html",
+        organisations=organisations
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
