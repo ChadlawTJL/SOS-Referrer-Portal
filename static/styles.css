@@ -532,6 +532,85 @@ body {background-image:
     background-color: #005ea6;
 }
 
+/*matters page*/
+matters-page {
+    background-color: #f5f5f5;
+    min-height: 100vh;
+}
+
+.matters-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 50px;
+}
+
+.matters-container h1 {
+    text-align: center;
+  color: yellow;
+  font-weight: bold;
+  font-size: 80px;
+  font-family: serif;
+  padding:auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  
+}
+ /* Table */
+.matters-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+ /* table rows */ 
+.matters-table th {
+    background-color: #1f3a5f;
+    color: white;
+    padding: 15px;
+    text-align: left;
+}
+/* table cell */
+.matters-table td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.matters-table tr:hover {
+    background-color: #f2f2f2;
+}
+
+.view-button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #1f3a5f;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.view-button:hover {
+    background-color: #315b8a;
+}
+
+.back-button {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.no-matters {
+    text-align: center;
+    background-color: white;
+    padding: 30px;
+}
+
+
+
 /* Cancel link */
 .create-user-page a {
     display: block;
@@ -551,3 +630,4 @@ body {background-image:
 .create-user-page a:hover {
     background-color: #dddddd;
 }
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body class="matters-page">
+
+    <div class="matters-container">
+        <!--if admin show every matter, if noyt, just show matters associated to the session organisation-->
+        {% if session.get("is_admin") %}
+            <h1>All Matters</h1>
+        {% else %}
+            <h1>Your Matters</h1>
+        {% endif %}
+
+        <table class="matters-table">
+<!---Creating basic status table-->
+            <thead>
+                <tr>
+                    <th>Matter Reference</th>
+                    <th>Client</th>
+                    <th>Matter Type</th>
+
+                    {% if session.get("is_admin") %}
+                        <th>Organisation</th>
+                    {% endif %}
+
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for matter in matters %}
+
+                    <tr>
+                        <td>{{ matter[1] }}</td>
+                        <td>{{ matter[2] }}</td>
+                        <td>{{ matter[3] }}</td>
+
+                        {% if session.get("is_admin") %}
+                            <td>{{ matter[5] }}</td>
+                        {% endif %}
+<!--the user can click on view to find the milestones -->
+                        <td>{{ matter[4] }}</td>
+
+                        <td>
+                            <a href="{{ url_for('view_matter', matter_id=matter[0]) }}"
+                               class="view-button">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <a href="{{ url_for('dashboard') }}"
+           class="back-button">
+            Back to Dashboard
+        </a>
+
+    </div>
+
+</body>
+</html>

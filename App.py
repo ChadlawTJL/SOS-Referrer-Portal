@@ -75,20 +75,61 @@ def login():
     return render_template("login.html")
     
 
-#route to the matters screen, then the code to pull through the matters from the datbase
+#route to the matters screen, then the code to pull through the matters from the database
 @app.route("/matters")
 def matters():
+
+    # Check user is logged in
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
     conn = get_db_connection()
+    cur = conn.cursor()
 
-    cursor = conn.cursor()
+    # Admin can see all matters (including joins between two tables)
+    if session.get("is_admin"):
+        cur.execute("""
+            SELECT
+                m.sos_matter_id,
+                m.matter_ref,
+                m.client_name,
+                m.matter_type,
+                m.status,
+                m.fee_earner,
+                o.organisation_name
+            FROM matters m
+            JOIN organisations o
+                ON m.organisation_id = o.organisation_id
+            ORDER BY m.matter_ref
+        """)
 
-    cursor.execute("SELECT * FROM matters;")
-    matters = cursor.fetchall()
+    # Normal users only see their organisation's matters (including joins between two tables)
+    else:
+        cur.execute("""
+            SELECT
+                m.sos_matter_id,
+                m.matter_ref,
+                m.client_name,
+                m.matter_type,
+                m.status,
+                m.fee_earner,
+                o.organisation_name
+            FROM matters m
+            JOIN organisations o
+                ON m.organisation_id = o.organisation_id
+            WHERE m.organisation_id = %s
+            ORDER BY m.matter_ref
+        """, (session["organisation_id"],))
 
-    cursor.close()
+    matters = cur.fetchall()
+
+    cur.close()
     conn.close()
 
-    return render_template("matter.html", matters=matters)
+    return render_template(
+        "matters.html",
+        matters=matters
+    )
 
 
 @app.route("/admin")
@@ -267,6 +308,8 @@ def create_user():
         "create_user.html",
         organisations=organisations
     )
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
