@@ -1,12 +1,15 @@
 import os
-
-from flask import Flask, render_template, request, redirect, url_for, session
+#flask modules
+from flask import Flask, render_template, request, redirect, url_for, session, request, jsonify
 #password hashing
 from werkzeug.security import check_password_hash, generate_password_hash
 #load in env
 from dotenv import load_dotenv
 #database connection
 from database import get_db_connection
+#loading the SOS integration functions
+from sos_integration import process_sos_matter
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -131,6 +134,69 @@ def matters():
         matters=matters
     )
 
+# API route used by SOS to create/update matters
+@app.route("/api/matters", methods=["POST"])
+def receive_matter():
+
+    conn = None
+
+    try:
+        #check api key
+        auth_header = request.headers.get("Authorization")
+
+        expected_key = os.getenv("SOS_API_KEY")
+
+        if not auth_header or auth_header != f"Bearer {expected_key}":
+            return jsonify({
+                "success": False,
+                "error": "Unauthorised"
+            }), 401
+
+        # Get JSON sent by SOS
+        data = request.get_json()
+
+        if not data:
+            return jsonify({
+                "success": False,
+                "error": "No JSON data received"
+            }), 400
+
+        # Connect to database
+        conn = get_db_connection()
+
+        # Pass the SOS data to sos_integration.py
+        result = process_sos_matter(conn, data)
+
+        # Send success response back to SOS
+        return jsonify({
+            "success": True,
+            "action": result["action"],
+            "sosMatterId": result["sosMatterId"]
+        }), 200
+#catching error - data error
+    except ValueError as e:
+
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 400
+#catching error - server/database error
+    except Exception as e:
+
+        if conn:
+            conn.rollback()
+
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+
+    finally:
+
+        if conn:
+            conn.close()
+
+            
 
 @app.route("/admin")
 def users():
