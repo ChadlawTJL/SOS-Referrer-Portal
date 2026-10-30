@@ -18,7 +18,7 @@ def process_sos_matter(conn, data):
         raise ValueError("sosMatterId is required")
 
     # Extract SOS data
-    matter_status = data.get("matterStatus")
+    status = data.get("matterStatus")
 
     client_care_issued = parse_sos_date(
         data.get("clientCareIssued")
@@ -79,7 +79,7 @@ def process_sos_matter(conn, data):
         cur.execute("""
             UPDATE matters
             SET
-                matter_status = %s,
+                status = %s,
                 client_care_issued = %s,
                 initial_documents_received = %s,
                 id_completed = %s,
@@ -93,7 +93,7 @@ def process_sos_matter(conn, data):
                 fee_earner = %s
             WHERE sos_matter_id = %s
         """, (
-            matter_status,
+            status,
             client_care_issued,
             initial_documents_received,
             id_completed,
@@ -118,7 +118,7 @@ def process_sos_matter(conn, data):
         cur.execute("""
             INSERT INTO matters (
                 sos_matter_id,
-                matter_status,
+                status,
                 client_care_issued,
                 initial_documents_received,
                 id_completed,
@@ -137,7 +137,7 @@ def process_sos_matter(conn, data):
             )
         """, (
             sos_matter_id,
-            matter_status,
+            status,
             client_care_issued,
             initial_documents_received,
             id_completed,
