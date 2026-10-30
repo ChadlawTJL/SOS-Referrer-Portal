@@ -1,6 +1,6 @@
 import os
 #flask modules
-from flask import Flask, render_template, request, redirect, url_for, session, request, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 #password hashing
 from werkzeug.security import check_password_hash, generate_password_hash
 #load in env
@@ -203,7 +203,7 @@ def users():
 
     #user must be logged in
     if "user_id" not in session:
-        return redirect(url_for("Login"))
+        return redirect(url_for("login"))
 
     #user must be an administrator
     if not session.get("is_admin"):
