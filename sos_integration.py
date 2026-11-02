@@ -109,7 +109,7 @@ def process_sos_matter(conn, data):
                 fee_earner,
                 last_updated
             )
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             sos_matter_id,
             sos_matter_id,
