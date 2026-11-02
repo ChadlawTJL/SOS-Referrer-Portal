@@ -32,9 +32,32 @@ def process_sos_matter(conn, data):
         data.get("lastUpdated")
     )
 
-    # Check whether matter already exists
+    # Get SOS referrer organisation reference
+    org_ref = str(data.get("orgRef", "")).strip()
+
+    if not org_ref:
+        raise ValueError("orgRef is required")
+
+    # Check whether organisation exists in portal database
     cur = conn.cursor()
 
+    cur.execute("""
+        SELECT id
+        FROM organisations
+        WHERE sos_referrer_reference = %s
+    """, (org_ref,))
+
+    organisation = cur.fetchone()
+
+    if not organisation:
+        raise ValueError(
+            "No organisation found for SOS referrer reference: {}".format(org_ref)
+        )
+
+    # Get portal organisation ID
+    organisation_id = organisation[0]
+
+    # Check whether matter already exists
     cur.execute("""
         SELECT sos_matter_id
         FROM matters
@@ -43,7 +66,7 @@ def process_sos_matter(conn, data):
 
     existing_matter = cur.fetchone()
 
-    
+
     # UPDATE EXISTING MATTER
 
     if existing_matter:
@@ -51,12 +74,14 @@ def process_sos_matter(conn, data):
         cur.execute("""
             UPDATE matters
             SET
+                organisation_id = %s,
                 status = %s,
                 opened_date = %s,
                 fee_earner = %s,
                 last_updated = %s
             WHERE sos_matter_id = %s
         """, (
+            organisation_id,
             status,
             opened_date,
             fee_earner,
@@ -68,29 +93,29 @@ def process_sos_matter(conn, data):
 
 
     # INSERT NEW MATTER
-    
 
     else:
 
         cur.execute("""
-    INSERT INTO matters (
-        sos_matter_id,
-        matter_ref,
-        status,
-        last_updated
-    )
-    VALUES (%s, %s, %s, CURRENT_TIMESTAMP)
-
-    ON CONFLICT (sos_matter_id)
-    DO UPDATE SET
-        matter_ref = EXCLUDED.matter_ref,
-        status = EXCLUDED.status,
-        last_updated = CURRENT_TIMESTAMP
-""", (
-    data["sosMatterId"],
-    data["sosMatterId"],
-    data.get("matterStatus")
-    ))
+            INSERT INTO matters (
+                sos_matter_id,
+                matter_ref,
+                organisation_id,
+                status,
+                opened_date,
+                fee_earner,
+                last_updated
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (
+            sos_matter_id,
+            sos_matter_id,
+            organisation_id,
+            status,
+            opened_date,
+            fee_earner,
+            last_updated
+        ))
 
         action = "created"
 
