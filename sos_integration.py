@@ -21,7 +21,7 @@ def process_sos_matter(conn, data):
 
     # Extract matter-level SOS data
     status = data.get("matterStatus")
-    matter_type = data.get("matterType")
+    matter_type = data.get("mattertype")
 
     opened_date = parse_sos_date(
         data.get("matterOpenedDate")
