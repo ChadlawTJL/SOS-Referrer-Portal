@@ -44,7 +44,7 @@ def process_sos_matter(conn, data):
     cur.execute("""
         SELECT organisation_id
         FROM organisations
-        WHERE sos_referrer_reference = %s
+        WHERE sos_referrer_id = %s
     """, (org_ref,))
 
     organisation = cur.fetchone()
