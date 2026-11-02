@@ -21,6 +21,7 @@ def process_sos_matter(conn, data):
 
     # Extract matter-level SOS data
     status = data.get("matterStatus")
+    matter_type = data.get("matterType")
 
     opened_date = parse_sos_date(
         data.get("matterOpenedDate")
@@ -75,6 +76,7 @@ def process_sos_matter(conn, data):
             UPDATE matters
             SET
                 organisation_id = %s,
+                matter_type = %s,
                 status = %s,
                 opened_date = %s,
                 fee_earner = %s,
@@ -101,6 +103,7 @@ def process_sos_matter(conn, data):
                 sos_matter_id,
                 matter_ref,
                 organisation_id,
+                matter_type,
                 status,
                 opened_date,
                 fee_earner,
@@ -111,6 +114,7 @@ def process_sos_matter(conn, data):
             sos_matter_id,
             sos_matter_id,
             organisation_id,
+            matter_type,
             status,
             opened_date,
             fee_earner,
