@@ -26,6 +26,7 @@
                         <th>Organisation</th>
                     {% endif %}
 
+                    <th> Fee Earner</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -38,12 +39,14 @@
                     <tr>
                         <td>{{ matter[1] }}</td>
                         <td>{{ matter[2] }}</td>
-                        <td>{{ matter[3] }}</td>
+                        <!--Changes to sos matter type codes to plain text-->
+                        <td>{{ matter_types.get(matter[3]|string, matter[3]) }}</td>
 
                         {% if session.get("is_admin") %}
-                            <td>{{ matter[5] }}</td>
+                            <td>{{ matter[6] }}</td>
                         {% endif %}
 <!--the user can click on view to find the milestones -->
+                        <td>{{ matter[5] }}</td>
                         <td>{{ matter[4] }}</td>
 
                         <td>

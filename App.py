@@ -129,10 +129,48 @@ def matters():
     cur.close()
     conn.close()
 
+    matter_types = {
+    "1501": "Sale",
+    "1502": "Purchase",
+    "1503": "Remortgage",
+    "1504": "Transfer of Equity"
+    }
+
     return render_template(
         "matters.html",
-        matters=matters
+        matters=matters,
+        matter_types=matter_types
     )
+
+#Viewing an indiviual matter route
+@app.route('/matter/<matter_id>')
+def view_matter(matter_id):
+
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT *
+        FROM matters
+        WHERE sos_matter_id = %s
+    """, (matter_id,))
+
+    matter = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    if matter is None:
+        return "Matter not found", 404
+
+    return render_template(
+        'view_matter.html',
+        matter=matter
+    )
+
 
 # API route used by SOS to create/update matters
 @app.route("/api/matters", methods=["POST"])
