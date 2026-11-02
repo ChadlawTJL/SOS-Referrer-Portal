@@ -33,10 +33,10 @@ def process_sos_matter(conn, data):
     )
 
     # Get SOS referrer organisation reference
-    org_ref = str(data.get("orgRef", "")).strip()
+    org_ref = str(data.get("orgref", "")).strip()
 
     if not org_ref:
-        raise ValueError("orgRef is required")
+        raise ValueError("orgref is required")
 
     # Check whether organisation exists in portal database
     cur = conn.cursor()
