@@ -84,6 +84,7 @@ def process_sos_matter(conn, data):
             WHERE sos_matter_id = %s
         """, (
             organisation_id,
+            matter_type,
             status,
             opened_date,
             fee_earner,
