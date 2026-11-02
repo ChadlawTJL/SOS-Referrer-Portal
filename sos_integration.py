@@ -1,8 +1,9 @@
-#import date and time
+# Import date and time
 from datetime import datetime
 
+
 def parse_sos_date(value):
-    #convert SOS date to python date
+    # Convert SOS DD/MM/YYYY date to Python date
 
     if value is None or value.strip() == "":
         return None
@@ -11,57 +12,27 @@ def parse_sos_date(value):
 
 
 def process_sos_matter(conn, data):
+
     # Validate required fields
     sos_matter_id = data.get("sosMatterId")
 
     if not sos_matter_id:
         raise ValueError("sosMatterId is required")
 
-    # Extract SOS data
+    # Extract matter-level SOS data
     status = data.get("matterStatus")
 
-    client_care_issued = parse_sos_date(
-        data.get("clientCareIssued")
-    )
-
-    initial_documents_received = parse_sos_date(
-        data.get("initialDocumentsReceived")
-    )
-
-    id_completed = parse_sos_date(
-        data.get("idCompleted")
-    )
-
-    note = data.get("note")
-
-    searches_pack_copies = parse_sos_date(
-        data.get("searchesPackCopies")
-    )
-
-    last_updated = parse_sos_date(
-        data.get("lastUpdated")
-    )
-
-    mortgage_or_redemption = parse_sos_date(
-        data.get("mortgageORedemption")
-    )
-
-    exchange_notice_toe = parse_sos_date(
-        data.get("exchangeNoticeTOE")
-    )
-
-    completion_date = parse_sos_date(
-        data.get("completionDate")
-    )
-
-    matter_opened_date = parse_sos_date(
+    opened_date = parse_sos_date(
         data.get("matterOpenedDate")
     )
 
     fee_earner = data.get("feeEarner")
 
-    # Check whether matter exists
+    last_updated = parse_sos_date(
+        data.get("lastUpdated")
+    )
 
+    # Check whether matter already exists
     cur = conn.cursor()
 
     cur.execute("""
@@ -72,87 +43,56 @@ def process_sos_matter(conn, data):
 
     existing_matter = cur.fetchone()
 
-    # Update existing matter
-  
+    
+    # UPDATE EXISTING MATTER
+
     if existing_matter:
 
         cur.execute("""
             UPDATE matters
             SET
                 status = %s,
-                client_care_issued = %s,
-                initial_documents_received = %s,
-                id_completed = %s,
-                note = %s,
-                searches_pack_copies = %s,
-                last_updated = %s,
-                mortgage_or_redemption = %s,
-                exchange_notice_toe = %s,
-                completion_date = %s,
-                matter_opened_date = %s,
-                fee_earner = %s
+                opened_date = %s,
+                fee_earner = %s,
+                last_updated = %s
             WHERE sos_matter_id = %s
         """, (
             status,
-            client_care_issued,
-            initial_documents_received,
-            id_completed,
-            note,
-            searches_pack_copies,
-            last_updated,
-            mortgage_or_redemption,
-            exchange_notice_toe,
-            completion_date,
-            matter_opened_date,
+            opened_date,
             fee_earner,
+            last_updated,
             sos_matter_id
         ))
 
         action = "updated"
 
-    # Insert new matter
+
+    # INSERT NEW MATTER
     
 
     else:
 
         cur.execute("""
-            INSERT INTO matters (
-                sos_matter_id,
-                status,
-                client_care_issued,
-                initial_documents_received,
-                id_completed,
-                note,
-                searches_pack_copies,
-                last_updated,
-                mortgage_or_redemption,
-                exchange_notice_toe,
-                completion_date,
-                matter_opened_date,
-                fee_earner
-            )
-            VALUES (
-                %s, %s, %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s, %s
-            )
-        """, (
-            sos_matter_id,
-            status,
-            client_care_issued,
-            initial_documents_received,
-            id_completed,
-            note,
-            searches_pack_copies,
-            last_updated,
-            mortgage_or_redemption,
-            exchange_notice_toe,
-            completion_date,
-            matter_opened_date,
-            fee_earner
-        ))
+    INSERT INTO matters (
+        sos_matter_id,
+        matter_ref,
+        status,
+        last_updated
+    )
+    VALUES (%s, %s, %s, CURRENT_TIMESTAMP)
+
+    ON CONFLICT (sos_matter_id)
+    DO UPDATE SET
+        matter_ref = EXCLUDED.matter_ref,
+        status = EXCLUDED.status,
+        last_updated = CURRENT_TIMESTAMP
+""", (
+    data["sosMatterId"],
+    data["sosMatterId"],
+    data.get("matterStatus")
+    ))
 
         action = "created"
-
 
     conn.commit()
 
