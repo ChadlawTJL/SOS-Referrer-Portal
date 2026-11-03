@@ -93,7 +93,7 @@
                     </span>
 
                     <span class="matter-detail__value">
-                        {{ matter.matter_name or "Not available" }}
+                        {{ matter_type_name or "Not available" }}
                     </span>
 
                 </div>
@@ -309,7 +309,7 @@
 
                     <p>
                         No active milestones have been configured for
-                        {{ matter.matter_name or "this matter type" }}.
+                        {{ matter_type_name or "this matter type" }}.
                     </p>
 
                 </div>
