@@ -23,6 +23,7 @@ def process_sos_matter(conn, data):
     status = data.get("matterStatus")
     matter_type = data.get("mattertype")
     client_name = data.get("clientname")
+    property_address = data.get("propertyaddress")
 
     opened_date = parse_sos_date(
         data.get("matterOpenedDate")
@@ -78,6 +79,7 @@ def process_sos_matter(conn, data):
             SET
                 organisation_id = %s,
                 client_name = %s,
+                property_address = %s,
                 matter_type = %s,
                 status = %s,
                 opened_date = %s,
@@ -87,6 +89,7 @@ def process_sos_matter(conn, data):
         """, (
             organisation_id,
             client_name,
+            property_address,
             matter_type,
             status,
             opened_date,
@@ -108,18 +111,20 @@ def process_sos_matter(conn, data):
                 matter_ref,
                 organisation_id,
                 client_name,
+                propert_address,
                 matter_type,
                 status,
                 opened_date,
                 fee_earner,
                 last_updated
             )
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             sos_matter_id,
             sos_matter_id,
             organisation_id,
             client_name,
+            property_address,
             matter_type,
             status,
             opened_date,

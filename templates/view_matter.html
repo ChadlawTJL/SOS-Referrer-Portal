@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='styles.css') }}"
+    >
+
+    <title>{{ matter.matter_ref }} - Matter Details</title>
+</head>
+
+<body class="view-matter-page">
+
+    <main class="matter-page">
+
+        
+
+
+        <!-- Matter Header -->
+        <header class="matter-header">
+
+            <div class="matter-header__details">
+
+                <p class="matter-header__label">
+                    Matter reference
+                </p>
+
+                <h1>
+                    {{ matter.matter_ref }}
+                </h1>
+
+                <p class="matter-header__client">
+                    {{ matter.client_name or "Client name unavailable" }}
+                </p>
+
+            </div>
+
+
+            <!-- Matter Status -->
+            <div
+                class="matter-status matter-status--{{ matter.status | lower | replace(' ', '-') }}"
+            >
+                {{ matter.status or "Status unavailable" }}
+            </div>
+
+        </header>
+
+
+        <!-- Matter Details -->
+        <section class="matter-card">
+
+            <h2>Matter details</h2>
+
+            <div class="matter-details-grid">
+
+
+                <!-- Matter Reference -->
+                <div class="matter-detail">
+
+                    <span class="matter-detail__label">
+                        Matter reference
+                    </span>
+
+                    <span class="matter-detail__value">
+                        {{ matter.matter_ref }}
+                    </span>
+
+                </div>
+
+
+                <!-- Client -->
+                <div class="matter-detail">
+
+                    <span class="matter-detail__label">
+                        Client
+                    </span>
+
+                    <span class="matter-detail__value">
+                        {{ matter.client_name or "Not available" }}
+                    </span>
+
+                </div>
+
+
+                <!-- Matter Type -->
+                <div class="matter-detail">
+
+                    <span class="matter-detail__label">
+                        Matter type
+                    </span>
+
+                    <span class="matter-detail__value">
+                        {{ matter.matter_name or "Not available" }}
+                    </span>
+
+                </div>
+
+
+                <!-- Status -->
+                <div class="matter-detail">
+
+                    <span class="matter-detail__label">
+                        Status
+                    </span>
+
+                    <span class="matter-detail__value">
+                        {{ matter.status or "Not available" }}
+                    </span>
+
+                </div>
+
+
+                <!-- Fee Earner -->
+                <div class="matter-detail">
+
+                    <span class="matter-detail__label">
+                        Fee earner
+                    </span>
+
+                    <span class="matter-detail__value">
+                        {{ matter.fee_earner or "Not available" }}
+                    </span>
+
+                </div>
+
+
+                <!-- Date Opened -->
+                <div class="matter-detail">
+
+                    <span class="matter-detail__label">
+                        Date opened
+                    </span>
+
+                    <span class="matter-detail__value">
+
+                        {% if matter.opened_date %}
+
+                            {{ matter.opened_date.strftime("%d %B %Y") }}
+
+                        {% else %}
+
+                            Not available
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+                <!-- Property Address -->
+                <div class="matter-detail matter-detail--wide">
+
+                    <span class="matter-detail__label">
+                        Property address
+                    </span>
+
+                    <span class="matter-detail__value">
+                        {{ matter.property_address or "Not available" }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Matter Progress -->
+        <section class="matter-card">
+
+            <div class="progress-heading">
+
+                <div>
+
+                    <h2>Matter progress</h2>
+
+                    <p>
+                        {{ completed_count }} of
+                        {{ total_count }}
+                        milestones completed
+                    </p>
+
+                </div>
+
+
+                <div class="progress-heading__percentage">
+                    {{ progress_percentage }}%
+                </div>
+
+            </div>
+
+
+            {% if total_count > 0 %}
+
+
+                
+            
+
+                <!-- Milestone Timeline -->
+                <ol class="milestone-timeline">
+
+                    {% for milestone in milestones %}
+
+                        <li
+                            class="
+                                milestone
+                                {% if milestone.is_completed %}
+                                    milestone--completed
+                                {% else %}
+                                    milestone--pending
+                                {% endif %}
+                            "
+                        >
+
+
+                            <!-- Milestone Marker -->
+                            <div class="milestone__marker">
+
+                                {% if milestone.is_completed %}
+
+                                    &#10003;
+
+                                {% else %}
+
+                                    {{ loop.index }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- Milestone Details -->
+                            <div class="milestone__content">
+
+                                <div class="milestone__heading">
+
+                                    <h3>
+                                        {{ milestone.milestone_name }}
+                                    </h3>
+
+
+                                    {% if milestone.is_completed %}
+
+                                        <span
+                                            class="milestone__status milestone__status--completed"
+                                        >
+                                            Completed
+                                        </span>
+
+                                    {% else %}
+
+                                        <span
+                                            class="milestone__status milestone__status--pending"
+                                        >
+                                            Pending
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- Milestone Date -->
+                                {% if milestone.milestone_date %}
+
+                                    <p class="milestone__date">
+                                        Completed
+                                        {{ milestone.milestone_date.strftime("%d %B %Y") }}
+                                    </p>
+
+
+                                {% elif milestone.is_completed %}
+
+                                    <p class="milestone__date">
+                                        Completed in SOS
+                                    </p>
+
+
+                                {% else %}
+
+                                    <p class="milestone__date">
+                                        This stage has not yet been completed.
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+                        </li>
+
+                    {% endfor %}
+
+                </ol>
+
+
+            {% else %}
+
+
+                <!-- No Milestones -->
+                <div class="empty-state">
+
+                    <h3>
+                        No timeline is available
+                    </h3>
+
+                    <p>
+                        No active milestones have been configured for
+                        {{ matter.matter_name or "this matter type" }}.
+                    </p>
+
+                </div>
+
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- Bottom Navigation -->
+        <div class="matter-page__footer">
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="back-button"
+            >
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 from database import get_db_connection
 #loading the SOS integration functions
 from sos_integration import process_sos_matter
+#allows the use of field names instead of indexing
+from psycopg.rows import dict_row
 
 
 load_dotenv()
@@ -142,36 +144,185 @@ def matters():
         matter_types=matter_types
     )
 
-#Viewing an indiviual matter route
-@app.route('/matter/<matter_id>')
-def view_matter(matter_id):
+@app.route("/matter/<string:matter_ref>")
+def view_matter(matter_ref):
 
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
+    if "user_id" not in session:
+        return redirect(url_for("login"))
 
-    conn = get_db_connection()
-    cur = conn.cursor()
+    conn = None
 
-    cur.execute("""
-        SELECT *
-        FROM matters
-        WHERE sos_matter_id = %s
-    """, (matter_id,))
+    try:
+        conn = get_db_connection()
+        #Converts result into python dictonary so we can use names instead of index
+        with conn.cursor(row_factory=dict_row) as cur:
 
-    matter = cur.fetchone()
+            
+            # Getting the matter details
+            
 
-    cur.close()
-    conn.close()
+            if session.get("is_admin"):
 
-    if matter is None:
-        return "Matter not found", 404
+                cur.execute(
+                    """
+                    SELECT
+                        sos_matter_id,
+                        matter_ref,
+                        organisation_id,
+                        matter_type,
+                        status,
+                        client_name,
+                        property_address,
+                        fee_earner,
+                        opened_date,
+                        last_updated
+                    FROM matters
+                    WHERE matter_ref = %s
+                    """,
+                    (matter_ref,)
+                )
 
-    return render_template(
-        'view_matter.html',
-        matter=matter
-    )
+            else:
+
+                cur.execute(
+                    """
+                    SELECT
+                        sos_matter_id,
+                        matter_ref,
+                        organisation_id,
+                        matter_type,
+                        status,
+                        client_name,
+                        property_address,
+                        fee_earner,
+                        opened_date,
+                        last_updated
+                    FROM matters
+                    WHERE matter_ref = %s
+                    AND organisation_id = %s
+                    """,
+                    (
+                        matter_ref,
+                        session["organisation_id"]
+                    )
+                )
+
+            matter = cur.fetchone()
+
+            if matter is None:
+                return "Matter not found", 404
 
 
+            
+            # Convert SOS code to plain text
+            
+
+            matter_types = {
+                "1501": "Sale",
+                "1502": "Purchase",
+                "1503": "Remortgage",
+                "1504": "Transfer of Equity"
+            }
+
+            matter_type_name = matter_types.get(
+                str(matter["matter_type"]),
+                str(matter["matter_type"])
+            )
+
+
+            
+            # Get milestones for matter type
+            
+            cur.execute(
+                """
+                SELECT
+                    md.milestone_definition_id,
+                    md.milestone_code,
+                    md.milestone_name,
+                    md.display_order,
+                    mm.matter_milestone_id,
+                    mm.milestone_date,
+
+                    CASE
+                        WHEN mm.matter_milestone_id IS NOT NULL
+                        THEN TRUE
+                        ELSE FALSE
+                    END AS is_completed
+
+                FROM milestone_definitions md
+
+                LEFT JOIN matter_milestones mm
+                    ON mm.milestone_definition_id =
+                       md.milestone_definition_id
+                    AND mm.sos_matter_id = %s
+
+                WHERE md.matter_type = %s
+                AND md.is_active = TRUE
+
+                ORDER BY md.display_order
+                """,
+                (
+                    matter["sos_matter_id"],
+                    matter_type_name
+                )
+            )
+
+            milestones = cur.fetchall()
+
+
+        
+        # Progress Calculations
+        
+
+        completed_count = sum(
+            1
+            for milestone in milestones
+            if milestone["is_completed"]
+        )
+
+        total_count = len(milestones)
+
+        if total_count > 0:
+
+            progress_percentage = round(
+                (completed_count / total_count) * 100
+            )
+
+        else:
+
+            progress_percentage = 0
+
+
+        
+        # Loading page
+        
+
+        return render_template(
+            "view_matter.html",
+            matter=matter,
+            matter_type_name=matter_type_name,
+            milestones=milestones,
+            completed_count=completed_count,
+            total_count=total_count,
+            progress_percentage=progress_percentage
+        )
+
+
+    except Exception as e:
+
+        print(
+            f"Error loading matter {matter_ref}: {e}"
+        )
+
+        return (
+            f"Error loading matter {matter_ref}: {str(e)}",
+            500
+        )
+
+    finally:
+
+        if conn:
+            conn.close()
 # API route used by SOS to create/update matters
 @app.route("/api/matters", methods=["POST"])
 def receive_matter():
