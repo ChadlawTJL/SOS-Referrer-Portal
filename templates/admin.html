@@ -74,10 +74,72 @@
         </tbody>
 
     </table>
+        </a>
+<!--Audit Log Section-->
+<div class="admin-section">
+
+    <h2>Audit Log</h2>
+
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Date / Time</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Matter</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for entry in audit_entries %}
+
+            <tr>
+                <td>
+                    {{ entry[1].strftime('%d/%m/%Y %H:%M') }}
+                </td>
+
+                <td>
+                    {{ entry[5] or 'System' }}
+                </td>
+
+                <td>
+                    {{ entry[2] }}
+                </td>
+
+                <td>
+                    {% if entry[3] %}
+                        {{ entry[3] }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td>
+                    {{ entry[4] or '-' }}
+                </td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="5">
+                    No audit activity recorded.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+</div>
+
 <a href="{{ url_for('dashboard') }}"
            class="back-button">
             Back to Dashboard
-        </a>
+            
 </main>
 
 </body>

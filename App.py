@@ -29,6 +29,33 @@ def dashboard():
         role=session["is_admin"]
     )
 
+#Writing an audit log entry
+def write_audit_log(user_id, action, sos_matter_id=None, details=None):
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO audit_log (
+                        user_id,
+                        sos_matter_id,
+                        action,
+                        details
+                    )
+                    VALUES (%s, %s, %s, %s)
+                """, (
+                    user_id,
+                    sos_matter_id,
+                    action,
+                    details
+                ))
+
+            conn.commit()
+
+    except Exception as e:
+        print(f"Audit log error: {e}")
+
+
+#Login page 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -144,6 +171,8 @@ def matters():
         matter_types=matter_types
     )
 
+
+#View individual matter 
 @app.route("/matter/<string:matter_ref>")
 def view_matter(matter_ref):
 
@@ -386,7 +415,7 @@ def receive_matter():
             conn.close()
 
             
-
+#Admin page
 @app.route("/admin")
 def users():
 
@@ -411,12 +440,29 @@ def users():
         FROM users
         ORDER BY email;
     """)
-
     users=cursor.fetchall()
+# Audit log - limit to 100 records
+    cursor.execute("""
+        SELECT
+            a.audit_id,
+            a.created_at,
+            a.action,
+            a.sos_matter_id,
+            a.details,
+            u.email
+        FROM audit_log a
+        LEFT JOIN users u
+            ON a.user_id = u.user_id
+            ORDER BY a.created_at DESC
+            LIMIT 100
+            """)
+    audit_entries = cursor.fetchall()
+    
 
     cursor.close()
     conn.close()
-    return render_template("admin.html",users=users)
+    return render_template("admin.html",users=users,audit_entries=audit_entries)
+
 
 #edit user
 @app.route("/edit_user/<int:user_id>", methods=["GET", "POST"])
@@ -482,6 +528,7 @@ def edit_user(user_id):
         user=user,
         organisations=organisations
     )
+
 
 # Delete user
 @app.route("/delete_user/<int:user_id>", methods=["POST"])
