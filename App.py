@@ -95,6 +95,13 @@ def login():
             session["is_admin"] = user[3]
             session["organisation_id"] = user[4]
 
+            # Audit log - login
+            write_audit_log(
+                user_id=user[0],
+                action="LOGIN",
+                details="User logged in successfully"
+            )
+
             return redirect(url_for("dashboard"))
 
         # Incorrect login details
@@ -164,6 +171,12 @@ def matters():
     "1503": "Remortgage",
     "1504": "Transfer of Equity"
     }
+
+    write_audit_log(
+                    user_id=session["user_id"],
+                    action="VIEW_ALL_MATTER",
+                    details="User viewed matter details"
+                    )
 
     return render_template(
         "matters.html",
@@ -321,8 +334,17 @@ def view_matter(matter_ref):
 
             progress_percentage = 0
 
-
-        
+           
+         # Audit log - individual matter
+            write_audit_log(
+                user_id=session["user_id"],
+                action="VIEW_MATTER",
+                sos_matter_id=matter_ref,
+                details="User viewed matter details"
+                )
+                                    
+            
+                        
         # Loading page
         
 
@@ -461,6 +483,14 @@ def users():
 
     cursor.close()
     conn.close()
+
+    write_audit_log(
+                    user_id=session["user_id"],
+                    action="VIEW_ADMIN_PAGE",
+                    details="User viewed matter details"
+                    )
+    
+
     return render_template("admin.html",users=users,audit_entries=audit_entries)
 
 
