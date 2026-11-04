@@ -487,7 +487,7 @@ def users():
     write_audit_log(
                     user_id=session["user_id"],
                     action="VIEW_ADMIN_PAGE",
-                    details="User viewed matter details"
+                    details="User accessed admin page"
                     )
     
 
