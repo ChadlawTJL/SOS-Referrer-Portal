@@ -339,9 +339,9 @@ def view_matter(matter_ref):
             write_audit_log(
                 user_id=session["user_id"],
                 action="VIEW_MATTER",
-                sos_matter_id=matter_ref,
-                details="User viewed matter details"
-                )
+                sos_matter_id=matter["sos_matter_id"],
+                details=f"User viewed matter {matter['matter_ref']}"
+            )       
                                     
             
                         
