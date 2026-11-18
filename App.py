@@ -172,6 +172,7 @@ def matters():
     "1504": "Transfer of Equity"
     }
 
+
     write_audit_log(
                     user_id=session["user_id"],
                     action="VIEW_ALL_MATTER",
