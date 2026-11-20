@@ -604,7 +604,7 @@ def create_user():
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
-        organisation_id = request.form["organisation_id"]
+        organisation_id = request.form.get("organisation_id") or None
 
         # Checkbox only appears in the form data when ticked
         is_admin = "is_admin" in request.form

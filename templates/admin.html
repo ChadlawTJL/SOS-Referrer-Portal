@@ -36,7 +36,7 @@
 
             <tr>
                 <td>{{ user[1] }}</td>
-                <td>{{ user[3] }}</td>
+                <td>{{ user[3] if user[3] is not none else 'None' }}</td>
 
                 <td>
                     <!--Establishes if the user is an admin, changing a boolena to a yes no-->
